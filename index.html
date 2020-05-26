@@ -8,319 +8,72 @@
 
   <!-- load CSS -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">    <!-- Google web font "Open Sans" -->
-  <link rel="stylesheet" href="css/bootstrap.min.css">                                        <!-- https://getbootstrap.com/ -->
-  <link rel="stylesheet" href="css/templatemo-style.css">                                     <!-- Templatemo style -->
-
-  <script>
-    var renderPage = true;
-
-    if(navigator.userAgent.indexOf('MSIE')!==-1
-      || navigator.appVersion.indexOf('Trident/') > 0){
-        /* Microsoft Internet Explorer detected in. */
-        alert("Please view this in a modern browser such as Chrome or Microsoft Edge.");
-        renderPage = false;
-    }
-  </script>
+  <link rel="stylesheet" href="css/demo.css">                                        <!-- https://getbootstrap.com/ -->
 
 </head>
 
 <body>
   <!-- Loader -->
-  <div id="loader-wrapper">
-    <div id="loader"></div>
-    <div class="loader-section section-left"></div>
-    <div class="loader-section section-right"></div>
-  </div>
+    <div class="container">
+    <div class="card">
+      <div class="imgBx" data-text="How">
+        <img src = "img/coronavirus.png">
+      </div>
+    <div class = "content">
+      <div>
+        <h3>Respiratory Transmission
+ </h3>
+        <p>Transmitted between people through "respiratory droplets" when symptomatic people sneeze or cough</p>
+      </div>
+    </div>
+    </div>
 
- <div class="container">
+    <div class="card">
+      <div class="imgBx" data-text="Does">
+        <img src = "img/virus.png">
+      </div>
+    <div class = "content">
+      <div>
+        <h3>Aerosol transmission
+ </h3>
+        <p> Suspend in the air for long enough to infect passersby</p>
+      </div>
+    </div>
+    </div>
 
-  <!-- 1st section -->
-  <section class="row tm-section">
-   <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 p-0">
-    <div class="tm-flex-center p-5 tm-bg-color-primary tm-section-min-h">
-      <h1 class="tm-text-color-white tm-site-name">Histogram</h1>
+    <div class="card">
+      <div class="imgBx" data-text="It">
+        <img src = "img/clean.png">
+      </div>
+    <div class = "content">
+      <div>
+        <h3>Contact transmission </h3>
+        <p>A person touches infected object,
+          then touches their nose, mouth or eyes. The virus then sneaks into the body via the
+          mucous membranes, infecting the second person. </p>
+      </div>
     </div>
   </div>
-  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-      <div class="tm-flex-center p-5">
-	<p>
-	Histograms are graphs of a distribution of data designed to show centering, dispersion (spread), and shape (relative frequency) of the data. 
-	Histograms can provide a visual display of large amounts of data that are difficult to understand in a tabular, or spreadsheet form. <br />
-	
-	</p>	
-	</div>
-	</div>
-</section>
 
-<!-- 2nd section -->
-<section class="row tm-section tm-col-md-reverse">
- <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-  <div class="tm-flex-center p-5">
-    <div class="tm-md-flex-center">
- <!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
-
-<!-- Create a div where the graph will take place -->
-<div id="hover"></div>
-
-
-<script>
-
-// set the dimensions and margin of the graph
-var hoverMargin = {top: 10, right: 30, bottom: 30, left: 40},
-    hoverWidth = 460 - hoverMargin.left - hoverMargin.right,
-    hoverHeight = 400 - hoverMargin.top - hoverMargin.bottom;
-
-// append the svg object to the body of the page
-var hoverSVG = d3.select("#hover")
-  .append("svg")
-    .attr("width", hoverWidth + hoverMargin.left + hoverMargin.right)
-    .attr("height", hoverHeight + hoverMargin.top + hoverMargin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + hoverMargin.left + "," + hoverMargin.top + ")");
-
-// get the data
-d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
-
-  // X axis: scale and draw:
-  var x = d3.scaleLinear()
-      .domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-      .range([0, hoverWidth]);
-  hoverSVG.append("g")
-      .attr("transform", "translate(0," + hoverHeight + ")")
-      .call(d3.axisBottom(x));
-
-  // set the parameters for the histogram
-  var histogram = d3.histogram()
-      .value(function(d) { return d.price; })   // I need to give the vector of value
-      .domain(x.domain())  // then the domain of the graphic
-      .thresholds(x.ticks(70)); // then the numbers of bins
-
-  // And apply this function to data to get the bins
-  var bins = histogram(data);
-
-  // Y axis: scale and draw:
-  var y = d3.scaleLinear()
-      .range([hoverHeight, 0]);
-      y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-  hoverSVG.append("g")
-      .call(d3.axisLeft(y));
-
-  // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
-  // Its opacity is set to 0: we don't see it by default.
-  var tooltip = d3.select("#hover")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "#7E7676")
-    .style("color", "black")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
-
-  // A function that change this tooltip when the user hover a point.
-  // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
-  var showTooltip = function(d) {
-    tooltip
-      .transition()
-      .duration(100)
-      .style("opacity", 1)
-    tooltip
-      .html("Range: " + d.x0 + " - " + d.x1)
-      .style("left", (d3.mouse(this)[0]+20) + "px")
-      .style("top", (d3.mouse(this)[1]) + "px")
-  }
-  var moveTooltip = function(d) {
-    tooltip
-    .style("left", (d3.mouse(this)[0]+20) + "px")
-    .style("top", (d3.mouse(this)[1]) + "px")
-  }
-  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-  var hideTooltip = function(d) {
-    tooltip
-      .transition()
-      .duration(100)
-      .style("opacity", 0)
-  }
-
-  // append the bar rectangles to the svg element
-  hoverSVG.selectAll("rect")
-      .data(bins)
-      .enter()
-      .append("rect")
-        .attr("x", 1)
-        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-        .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-        .attr("height", function(d) { return hoverHeight - y(d.length); })
-        .style("fill", "#339999")
-        // Show tooltip on hover
-        .on("mouseover", showTooltip )
-        .on("mousemove", moveTooltip )
-        .on("mouseleave", hideTooltip )
-
-});
-</script>
+    <div class="card">
+      <div class="imgBx" data-text="Spread">
+        <img src = "img/hand.png">
+      </div>
+    <div class = "content">
+      <div>
+        <h3> Simple disinfectants can kill it. </h3>
+      </div>
     </div>
-  </div>
-</div>
-<div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 p-0">
-  <div class="tm-flex-center p-5 tm-bg-color-primary">
-    <div class="tm-max-w-400 tm-flex-center tm-flex-col">
-	 <h2 style="color: white;">Positively Skewed</h2> <br />
-      <p style="color: white;">
-	  A distribution skewed to the right is said to be positively skewed. This kind of distribution has a large number of occurrences in the lower value cells (left side) and few in the upper value cells (right side). <br />
-	  A skewed distribution can result when data is gathered from a system with has a boundary such as zero. In other words, all the collected data has values greater than zero. 
-	  <br />
-	  <i>(Hover to view range)</i>
-	  <br />
-	  <br />
-	  <b>Task:</b> Using the same axis, sketch a negatively skewed chart out on whiteboard online in this set of slides.
-	  </p>
     </div>
-  </div>
-</div>
-</section>
 
-	<section class="row tm-section">
-	   <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 p-0">
-    <div class="tm-flex-center p-5 tm-bg-color-primary tm-section-min-h">
-     
-	  <p class="tm-text-color-white">
-	  <strong><font size="6">Bins in Histogram</font></strong> <br /><br />
-		In a histogram, the total range of data set (i.e from minimum value to maximum value) is divided into 8 to 15 equal parts. <br />These equal parts are known as bins or class intervals. <br />
-		Each and every observation (or value) in the data set is placed in the appropriate bin. <br />The number of observations occupying a given bin, becomes the frequency of that bin. <br />
-		Note that no overlap is allowed between the bins. <br />Any observation can occupy one and only one bin. 
-		<br />
-		<br />
-		<b>Question:</b>
-		<br />
-		Compare the distributions between 20 bins and 50 bins. What conclusion can you draw?
-	  </p>
     </div>
-  </div>
-	  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-	 <!-- Load d3.js -->
-		<script src="https://d3js.org/d3.v4.js"></script>
-
-		<!-- Create a div where the graph will take place -->
-		
-			<p style="position: relative; top: 15px; left: 85px;" ><font size="4.5"><strong>The histogram illustrates the results of a survey</strong></font> </p>
-			<p style="position: relative; bottom: 5px; left: 80px; top"><font size="3">You are allowed to explore the different bin size results. </font></p>
-			
-		<div id="keyBin"></div>
-		<p style="position: relative; left: 45px;">
-		  <label>No. of bins:</label>
-		  <input type="number" min="5" max="100" step="30" value="20" id="nBin" style="color: red;" >
-		</p>
-				<script>
-
-				// set the dimensions and margins of the graph
-				var margin = {top: 10, right: 30, bottom: 30, left: 40},
-					width = 560 - margin.left - margin.right,
-					height = 400 - margin.top - margin.bottom;
-
-				// append the svg object to the body of the page
-				var svg = d3.select("#keyBin")
-				  .append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-				  .append("g")
-					.attr("transform",
-						  "translate(" + margin.left + "," + margin.top + ")");
-
-				// get the data
-				d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
-
-				  // X axis: scale and draw:
-				  var x = d3.scaleLinear()
-					  .domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-					  .range([0, width]);
-				  svg.append("g")
-					  .attr("transform", "translate(0," + height + ")")
-					  .call(d3.axisBottom(x));
-
-				  // Y axis: initialization
-				  var y = d3.scaleLinear()
-					  .range([height, 0]);
-				  var yAxis = svg.append("g")
-
-				  // A function that builds the graph for a specific value of bin
-				  function update(nBin) {
-
-					// set the parameters for the histogram
-					var histogram = d3.histogram()
-						.value(function(d) { return d.price; })   // I need to give the vector of value
-						.domain(x.domain())  // then the domain of the graphic
-						.thresholds(x.ticks(nBin)); // then the numbers of bins
-
-					// And apply this function to data to get the bins
-					var bins = histogram(data);
-
-					// Y axis: update now that we know the domain
-					y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-					yAxis
-						.transition()
-						.duration(1000)
-						.call(d3.axisLeft(y));
-
-					// Join the rect with the bins data
-					var u = svg.selectAll("rect")
-						.data(bins)
-
-					// Manage the existing bars and eventually the new ones:
-					u
-						.enter()
-						.append("rect") // Add a new rect for each new elements
-						.merge(u) // get the already existing elements as well
-						.transition() // and apply changes to all of them
-						.duration(1000)
-						  .attr("x", 1)
-						  .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-						  .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-						  .attr("height", function(d) { return height - y(d.length); })
-						  .style("fill", "#4CBABA")
 
 
-					// If less bar in the new histogram, I delete the ones not in use anymore
-					u
-						.exit()
-						.remove()
-
-					}
 
 
-				  // Initialize with 20 bins
-				  update(20)
-
-
-				  // Listen to the button -> update if user change it
-				  d3.select("#nBin").on("input", function() {
-					update(+this.value);
-				  });
-
-				});
-				</script>
-		</div>
-	</section>
 
 
 </div>
-<!-- load JS -->
-<script src="js/jquery-3.2.1.slim.min.js"></script>         <!-- https://jquery.com/ -->
-<script>
-
-  /* DOM is ready
-  ------------------------------------------------*/
-  $(function(){
-
-    if(renderPage) {
-      $('body').addClass('loaded');
-    }
-
-    $('.tm-current-year').text(new Date().getFullYear());  // Update year in copyright
-  });
-
-</script>
 
 </body>
 </html>
